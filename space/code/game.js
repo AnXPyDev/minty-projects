@@ -64,16 +64,28 @@ def("enemy", class extends Actor {
         this.size = v(Random.int(20,40),Random.int(40,80));
         this.spd = Random.int(5,20); 
         this.mask = prect(v(40,40));
+        this.isFading = false;
+        this.alpha = 1;
     }
     tick() {
+        if(this.isFading) {
+            this.alpha -= 0.05;
+        }
         this.pos.y += this.spd;
-        if(this.pos.y > scene.size.y + this.size.y / 2) {
+        if(this.pos.y > scene.size.y + this.size.y / 2 || this.alpha < 0.05) {
             Instance.destroy("enemy", this.id);
         }
         this.angle.set(this.angle.deg + this.spd/4, "deg");
     }
     draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
         MorphPolygon(this.mask, this).draw();
+        ctx.restore();
+    }
+    fade() {
+        this.isFading = true;
+        this.isCollidable = false;
     }
 })
 
@@ -91,7 +103,7 @@ def("bullet", class extends Actor {
         let c = collides(this, "enemy");
         if(c.is) {
             c.id.forEach(x => {
-                Instance.destroy("enemy", x);
+                Instance.get("enemy", x).fade();
             })
             Instance.destroy("bullet", this.id);
         }
