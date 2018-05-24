@@ -1,1 +1,1 @@
-{"name":"Default","code":{"js":["game.js"],"json":[]},"assets":{"images":["bck.jpg"],"sounds":[]}}
+{"name":"Default","code":{"js":["game.js"],"json":[]},"assets":{"images":["bck.jpg","spaceship.png"],"sounds":[]},"imgSmoothing":false}

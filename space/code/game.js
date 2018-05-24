@@ -34,17 +34,19 @@ def("main", class extends Actor {
         super();
         this.pos.y = Math.floor(scene.size.y * 0.8);
         this.pos.x = Math.floor(scene.size.x * 0.5);
-        this.mask = prect(v(40,40));
-        this.size = v(30,40);
+        this.mask = prect(v(1,1));
+        this.size = v(60,80);
+        this.sprite = new Sprite("spaceship", 1, 0);
         this.depth = 15;
-        this.loop("shoot",() => {Instance.spawn("bullet", [v(this.pos.x, this.pos.y)]);}, 10);
+        this.loop("shoot",() => {if (Key.check("mouse")) { Instance.spawn("bullet", [v(this.pos.x, this.pos.y)]);}}, 7);
     }
     tick() {
-        this.pos.x = lerp(this.pos.x, Mouse.x, 0.5, true);
+        this.pos.x = lerp(this.pos.x, Mouse.x, 0.5 * dt, true);
     }
     draw() {
-        let p = MorphPolygon(this.mask, this);
-        p.draw((collides(this, "enemy").is ? "red" : "green"));
+        //let p = MorphPolygon(this.mask, this);
+        //p.draw((collides(this, "enemy").is ? "red" : "green"));
+        this.sprite.draw(this.pos, this.size);
     }
     
 }) 
@@ -69,13 +71,13 @@ def("enemy", class extends Actor {
     }
     tick() {
         if(this.isFading) {
-            this.alpha -= 0.05;
+            this.alpha -= 0.05 * dt;
         }
-        this.pos.y += this.spd;
+        this.pos.y += this.spd * dt;
         if(this.pos.y > scene.size.y + this.size.y / 2 || this.alpha < 0.05) {
             Instance.destroy("enemy", this.id);
         }
-        this.angle.set(this.angle.deg + this.spd/4, "deg");
+        this.angle.set(this.angle.deg + (this.spd/4 * dt), "deg");
     }
     draw() {
         ctx.save();
@@ -99,7 +101,7 @@ def("bullet", class extends Actor {
         this.depth = 7;
     }
     tick() {
-        this.pos.y -= this.spd;
+        this.pos.y -= this.spd * dt;
         let c = collides(this, "enemy");
         if(c.is) {
             c.id.forEach(x => {
@@ -112,8 +114,6 @@ def("bullet", class extends Actor {
         }
     }
     draw() {
-        
         MorphPolygon(this.mask, this).draw("red");
-        
     }
 })
