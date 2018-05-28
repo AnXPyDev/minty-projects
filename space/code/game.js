@@ -32,13 +32,17 @@ function prect(sz) {
 def("main", class extends Actor {
     constructor() {
         super();
-        this.pos.y = Math.floor(scene.size.y * 0.8);
-        this.pos.x = Math.floor(scene.size.x * 0.5);
+        this.pos.y = Math.floor(scene.size.y * 0.8 - scene.size.y / 2);
+        this.pos.x = Math.floor(scene.size.x * 0.5 - scene.size.x / 2);
         this.mask = prect(v(1,1));
         this.size = v(60,80);
         this.sprite = new Sprite("spaceship", 1, 0);
         this.depth = 15;
-        this.loop("shoot",() => {if (Key.check("mouse")) { Instance.spawn("bullet", [v(this.pos.x, this.pos.y)]);}}, 7);
+        this.loop("shoot",() => {if (Key.check("mouse")) { 
+                Instance.spawn("bullet", [v(this.pos.x, this.pos.y)]);
+            }
+        }, 7);
+        this.angle = new Angle("deg", 45);
     }
     tick() {
         this.pos.x = lerp(this.pos.x, Mouse.x, 0.5 * dt, true);
@@ -46,7 +50,7 @@ def("main", class extends Actor {
     draw() {
         //let p = MorphPolygon(this.mask, this);
         //p.draw((collides(this, "enemy").is ? "red" : "green"));
-        this.sprite.draw(this.pos, this.size);
+        this.sprite.draw(this.pos, this.size, this.angle);
     }
     
 }) 
@@ -61,8 +65,8 @@ def("spawner", class extends Actor {
 def("enemy", class extends Actor {
     constructor() {
         super();
-        this.pos.x =  Math.floor(Math.random() * scene.size.x);
-        this.pos.y = -60;
+        this.pos.x =  Math.floor(Math.random() * scene.size.x - scene.size.x / 2);
+        this.pos.y = -scene.size.y / 2 - 60;
         this.size = v(Random.int(20,40),Random.int(40,80));
         this.spd = Random.int(5,20); 
         this.mask = prect(v(40,40));
@@ -109,7 +113,7 @@ def("bullet", class extends Actor {
             })
             Instance.destroy("bullet", this.id);
         }
-        if(this.pos.y < -5) {
+        if(this.pos.y < -scene.size.y - 5) {
             Instance.destroy("bullet", this.id);
         }
     }
