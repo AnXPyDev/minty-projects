@@ -1,2 +1,2 @@
 cd minty;
-sh run.sh;
+sh run.sh $1;

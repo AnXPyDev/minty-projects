@@ -1,8 +1,8 @@
 const r0 = new Scene(
     v(600,600),
     {
-        main: [[]],
-        spawner: [[]]
+        main: [[undefined]],
+        spawner: [[undefined]]
     },
     {
         main: ["bck", "tiled"]
@@ -17,10 +17,11 @@ const r0 = new Scene(
     60
 )
 
+r0.ignore_persistant = true;
 
-GAME.onload = function() {
+GAME.onload.set(function() {
     r0.load();
-}
+})
 
 function prect(sz) {
     let p = new Polygon();
@@ -31,7 +32,7 @@ function prect(sz) {
 
 def("main", class extends Actor {
     constructor() {
-        super();
+        super(v());
         this.pos.y = Math.floor(scene.size.y * 0.8 - scene.size.y / 2);
         this.pos.x = Math.floor(scene.size.x * 0.5 - scene.size.x / 2);
         this.mask = prect(v(1,1));
@@ -42,7 +43,7 @@ def("main", class extends Actor {
                 Instance.spawn("bullet", [v(this.pos.x, this.pos.y)]);
             }
         }, 7);
-        this.angle = new Angle("deg", 45);
+        this.angle = new Angle("deg", 0);
     }
     tick() {
         this.pos.x = lerp(this.pos.x, Mouse.x, 0.5 * dt, true);
@@ -57,14 +58,14 @@ def("main", class extends Actor {
 
 def("spawner", class extends Actor {
     constructor() {
-        super();
+        super(v());
         this.loop("spn", () => {Instance.spawn("enemy", [])}, 5);
     }
 }) 
 
 def("enemy", class extends Actor {
     constructor() {
-        super();
+        super(v());
         this.pos.x =  Math.floor(Math.random() * scene.size.x - scene.size.x / 2);
         this.pos.y = -scene.size.y / 2 - 60;
         this.size = v(Random.int(20,40),Random.int(40,80));
@@ -97,8 +98,7 @@ def("enemy", class extends Actor {
 
 def("bullet", class extends Actor {
     constructor(pos) {
-        super()
-        this.pos = pos;
+        super(pos);
         this.mask = prect(v(5,20));
         this.size = v(5,20);
         this.spd = 15;
@@ -106,9 +106,9 @@ def("bullet", class extends Actor {
     }
     tick() {
         this.pos.y -= this.spd * dt;
-        let c = collides(this, "enemy");
+        let c = collides(this, ["enemy"]);
         if(c.is) {
-            c.id.forEach(x => {
+            c.other["enemy"].forEach(x => {
                 Instance.get("enemy", x).fade();
             })
             Instance.destroy("bullet", this.id);

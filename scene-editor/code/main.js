@@ -1,24 +1,39 @@
-const sc0 = new Scene(v(600,600), {main:[[]], grid:[[]]}, {main:["noimage", "solid", "white"]},
+const editor_main_scene = new Scene(v(600,600), {editor_main:[[]], editor_grid:[[]]}, {main:["noimage", "solid", "white"]},
     function () {
         camera = new Camera();
     },
     function () {},
-    60)
+    60
+)
 
-GAME.onload = function() {
-    sc0.load();
+editor_main_scene.ignore_persistant = true;
+
+GAME.onload.set(function() {
+    editor_main_scene.load();
     vport.element.style = "cursor:default";
-}
+});
 
-def("main", class extends Actor {
-    constructor() {
-        super();
+def("editor_main", class extends Actor {
+    constructor(pos) {
+        super(pos);
+        let actKeys = Object.keys(act);
+        for(let i in actKeys) {
+            if(actKeys[i].split("_")[0] != "editor") {
+                act[actKeys[i]].prototype.tick = () => {};
+                act[actKeys[i]].prototype.mousedown = () => {};
+                act[actKeys[i]].prototype.loop = () => {};
+                act[actKeys[i]].prototype.destroyloop = () => {};
+            }
+        }
+    }
+    mousedown() {
+        Instance.spawn("main", [Mouse]);
     }
 })
 
-def("grid", class extends Actor {
-    constructor() {
-        super();
+def("editor_grid", class extends Actor {
+    constructor(pos) {
+        super(pos);
         this.block = v(40,40);
         this.linew = 1;
         this.omp = v()
@@ -27,14 +42,12 @@ def("grid", class extends Actor {
     tick() {
         when(Key.check("mouse"), () => {
             this.mp = v(Mouse.x - camera.pos.x, Mouse.y - camera.pos.y);
-            console.log("yes");
         })
         if (Key.check("mouse")) {
             this.omp = this.mp;
             this.mp = v(Mouse.x - camera.pos.x, Mouse.y - camera.pos.y);
             camera.pos.x += this.omp.x - this.mp.x;
             camera.pos.y += this.omp.y - this.mp.y;
-            console.log("no");
         }
     }
     draw() {
