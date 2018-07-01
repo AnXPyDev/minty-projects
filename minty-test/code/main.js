@@ -13,6 +13,7 @@ def("main", class extends Actor {
     constructor() {
         super(v(), "main");
         this.sprite = new Sprite("player", 1, 0);
+        this.sprite.attach("main", "att", 1, 0, 1);
         this.size = v(32,32);
         this.spd = v();
         this.speed = 5;
@@ -47,7 +48,7 @@ def("main", class extends Actor {
         this.sprite.update();
     }
     draw() {
-        //this.sprite.draw(this.pos, this.size, this.angle);
+        this.sprite.draw(this.pos, this.size, this.angle);
     }
 })
 
