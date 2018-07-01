@@ -1,1 +1,1 @@
-{"name":"Default","code":{"js":[],"json":[]},"assets":{"images":[],"sounds":[]},"imgSmoothing":false}
+{"name":"Default","code":{"js":["main.js"],"json":["bckpreset.json"]},"assets":{"images":["bck.png"],"sounds":[]},"imgSmoothing":false}
