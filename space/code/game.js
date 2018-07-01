@@ -43,6 +43,7 @@ def("main", class extends Actor {
                 Instance.spawn("bullet", [v(this.pos.x, this.pos.y)]);
             }
         }, 7);
+        this.angle = new Angle("deg", 45);
         this.angle = new Angle("deg", 0);
     }
     tick() {
