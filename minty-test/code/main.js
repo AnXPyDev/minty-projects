@@ -12,10 +12,11 @@ GAME.onload.set(function() {
 def("main", class extends Actor {
     constructor() {
         super(v(), "main");
-        this.sprite = new Sprite("player", 1, 0);
+        this.sprite = new Sprite(["player"], 1, 0);
+        this.sprite.attach("main", ["att"], 1, 0, 1);
         this.size = v(32,32);
         this.spd = v();
-        this.speed = 5;
+        this.speed = 10;
     }
     tick() {
         this.spd.x = function() {
@@ -39,15 +40,22 @@ def("main", class extends Actor {
             } else {
                 return 0;
             }
+
         }()
         this.pos.x += this.spd.x * this.speed;
         this.pos.y += this.spd.y * this.speed;
-        bck.main.scale.x = bck.main.scale.y = Math.abs(Math.sin(new Date() / 1000)) + 0.2;
+        if(this.spd.x != 0 || this.spd.y != 0) {
+            bck.main.img.numix = 1;
+        } else {
+            bck.main.img.numix = 0;
+        }
+        bck.main.scale.x = bck.main.scale.y = Math.abs(Math.sin(new Date() / 1000)) + 0.7;
+        
         this.angle.between(this.pos, Mouse);
         this.sprite.update();
     }
     draw() {
-        //this.sprite.draw(this.pos, this.size, this.angle);
+        this.sprite.draw(this.pos, this.size, this.angle);
     }
 })
 

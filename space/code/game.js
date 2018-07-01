@@ -5,7 +5,7 @@ const r0 = new Scene(
         spawner: [[undefined]]
     },
     {
-        main: ["bck", "tiled"]
+        main: [["bck"], "tiled"]
     },
     () => {
         bck.main.spd = v(0,5);
@@ -37,7 +37,7 @@ def("main", class extends Actor {
         this.pos.x = Math.floor(scene.size.x * 0.5 - scene.size.x / 2);
         this.mask = prect(v(1,1));
         this.size = v(60,80);
-        this.sprite = new Sprite("spaceship", 1, 0);
+        this.sprite = new Sprite(["spaceship"], 1, 0);
         this.depth = 15;
         this.loop("shoot",() => {if (Key.check("mouse")) { 
                 Instance.spawn("bullet", [v(this.pos.x, this.pos.y)]);
