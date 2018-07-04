@@ -17,9 +17,8 @@ def("main", class extends Actor {
         this.size = v(32,32);
         this.spd = v();
         this.speed = 10;
-        this.path = new Path([v(-50,-50),v(50,-50),v(50,50),v(-50,50)]);
-        this.path.assignClient(this.pos).point = this.pos;
-        this.path.clients[0].speed = 5;
+        this.path = new Path([v(-150,-150),v(150,-150), v(150,150), v(0,200), v(-150,150)]);
+        this.path.addClient(this.pos).speed = 5;
     }
     tick() {
         this.spd.x = function() {
