@@ -1,24 +1,42 @@
-const sc0 = new Scene(v(1024, 1024), 
-    {main:[[]]},{main:cfg.bckpreset.main},() => {
-        vport.resize(v(512, 512));
-        vport.element.style.cursor = "default";
-        bck.main.scale = v(0.25,0.25);
-    }, () => {}, 60, 60);
+const s0 = new Scene(v(1024,1024),
+{
+    box:[[v()],[v(32,32)],[v(64,64)]],
+    player:[[]]
+}, {
+    main:[["bck_glass"], "tiled"]
+}, () => {
+    bck.main.setScale(v(2,2));
+}, () => {}, 60,60);
 
 GAME.onload.set(function() {
-    sc0.load();
+    s0.load();
 })
 
-def("main", class extends Actor {
-    constructor() {
-        super(v(), "main");
-        this.sprite = new Sprite(["player"], 1, 0);
-        this.sprite.attach("main", ["att"], 1, 0, 1);
+def("box", class extends Actor {
+    constructor(pos) {
+        super(pos, "box");
         this.size = v(32,32);
+        this.mask = new Polygon();
+        this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
+        this.sprite = new Sprite(["box"], 1, 0);
+    }
+    tick() {
+        this.sprite.update();
+    }
+    draw() {
+        this.sprite.draw(this.pos, this.size, this.angle);
+    }
+}, undefined, ["solid"]);
+
+def("player", class extends Actor {
+    constructor() {
+        super(v(), "player");
+        this.size = v(32,32);
+        this.mask = new Polygon();
+        this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
+        this.sprite = new Sprite(["box"], 1, 0);
+        this.speed = 5;
         this.spd = v();
-        this.speed = 10;
-        this.path = new Path([v(-150,-150),v(150,-150), v(150,150), v(0,200), v(-150,150)]);
-        this.path.addClient(this.pos).speed = 5;
     }
     tick() {
         this.spd.x = function() {
@@ -44,16 +62,13 @@ def("main", class extends Actor {
             }
 
         }()
+        
+        
+
+
         this.pos.x += this.spd.x * this.speed;
         this.pos.y += this.spd.y * this.speed;
-        if(this.spd.x != 0 || this.spd.y != 0) {
-            bck.main.img.numix = 1;
-        } else {
-            bck.main.img.numix = 0;
-        }
-        bck.main.scale.x = bck.main.scale.y = Math.abs(Math.sin(new Date() / 1000)) + 0.7;
-        
-        this.angle.between(this.pos, Mouse);
+            
         this.sprite.update();
     }
     draw() {
