@@ -1,6 +1,6 @@
 const s0 = new Scene(v(1024,1024),
 {
-    box:[[v()],[v(32,32)],[v(64,64)]],
+    box:[[v()],[v(32,32)],[v(64,64)],[v(0,64)]],
     player:[[]]
 }, {
     main:[["bck_glass"], "tiled"]
@@ -30,13 +30,14 @@ def("box", class extends Actor {
 
 def("player", class extends Actor {
     constructor() {
-        super(v(), "player");
-        this.size = v(32,32);
+        super(v(-100,0), "player");
+        this.size = v(32, 32);
         this.mask = new Polygon();
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
         this.sprite = new Sprite(["box"], 1, 0);
-        this.speed = 5;
+        this.speed = 1;
         this.spd = v();
+        this.lastpos = v();
     }
     tick() {
         this.spd.x = function() {
@@ -63,12 +64,31 @@ def("player", class extends Actor {
 
         }()
         
-        
+        this.lastpos = v(this.pos.x, this.pos.y);
 
+        
+        if(collides(this, Instance.filter(["solid"]), v(this.pos.x + this.spd.x * this.speed, this.pos.y)).is) {
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is) {
+                this.pos.x += Math.sign(this.spd.x);
+            }
+            this.spd.x = 0;
+        }
+
+        if(collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + this.spd.y * this.speed)).is) {
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.sign(this.spd.y))).is) {
+                this.pos.y += Math.sign(this.spd.y);
+            }
+            this.spd.y = 0;
+        }
 
         this.pos.x += this.spd.x * this.speed;
         this.pos.y += this.spd.y * this.speed;
-            
+        
+        if(collides(this, Instance.filter(["solid"]))) {
+            this.pos.x = this.lastpos.x;
+            this.pos.y = this.lastpos.y;
+        }
+
         this.sprite.update();
     }
     draw() {
