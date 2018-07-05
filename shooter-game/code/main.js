@@ -3,7 +3,7 @@ const s0 = new Scene(v(1024,1024),
     box:[[v()],[v(32,32)],[v(64,64)],[v(0,64)]],
     player:[[]]
 }, {
-    main:[["bck_glass"], "tiled"]
+    main:[["bck_wood"], "tiled"]
 }, () => {
     bck.main.setScale(v(2,2));
 }, () => {}, 60,60);
@@ -63,8 +63,6 @@ def("player", class extends Actor {
             }
 
         }()
-        
-        this.lastpos = v(this.pos.x, this.pos.y);
 
         
         if(collides(this, Instance.filter(["solid"]), v(this.pos.x + this.spd.x * this.speed, this.pos.y)).is) {
@@ -81,14 +79,17 @@ def("player", class extends Actor {
             this.spd.y = 0;
         }
 
-        this.pos.x += this.spd.x * this.speed;
-        this.pos.y += this.spd.y * this.speed;
-        
-        if(collides(this, Instance.filter(["solid"]))) {
-            this.pos.x = this.lastpos.x;
-            this.pos.y = this.lastpos.y;
+        if(this.spd.x != 0 || this.spd.y != 0) {
+            let off = Random.int(-1, 1);
+            console.log(off)
+            bck.main.setOffset(v(off,off));
+        } else {
+            bck.main.setOffset(v());
         }
 
+        this.pos.x += this.spd.x * this.speed;
+        this.pos.y += this.spd.y * this.speed;
+    
         this.sprite.update();
     }
     draw() {
