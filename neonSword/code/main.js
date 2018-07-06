@@ -7,6 +7,7 @@ const s0 = new Scene(v(1024,1024),
     main:[["bck_black"], "tiled"]
 }, () => {
     bck.main.setScale(v(2,2));
+    vport.resize(v(1024, 576))
 }, () => {}, 60,60);
 
 GAME.onload.set(function() {
