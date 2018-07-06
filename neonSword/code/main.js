@@ -7,6 +7,7 @@ const s0 = new Scene(v(1024,1024),
     main:[["bck_black"], "tiled"]
 }, () => {
     bck.main.setScale(v(2,2));
+    vport.resize(v(1024, 576))
 }, () => {}, 60,60);
 
 GAME.onload.set(function() {
@@ -104,6 +105,7 @@ def("sword", class extends Actor {
         this.mask = new Polygon();
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
         this.sprite = new Sprite(["sword"], 1, 0);
+        this.depth = 100;    
     }
     tick() {
         let prevang = this.aangle.deg;
@@ -113,7 +115,8 @@ def("sword", class extends Actor {
         this.pos.copy(this.apos);
         this.pos.rotate(this.angle);
         if(Key.check("mouse")) {
-            if(Math.abs(prevang - this.aangle.deg) > 3) {
+            let angdiff = prevang - this.aangle.deg;
+            if(Math.abs(angdiff) > 5) {
                 Instance.spawn("sword_trail", [this.pos, this.angle, this.size.y]);
                 let coll = collides(this, Instance.filter(["enemy"]));
                 if(coll.is) {
@@ -143,6 +146,7 @@ def("sword_trail", class extends Actor {
         this.pos.copy(pos);
         this.angle.set(angle.deg);
         this.size = v(64,width);
+        this.depth = 99;
     }
     tick() {
         this.size.x -= 5;
