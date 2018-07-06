@@ -1,6 +1,6 @@
 const s0 = new Scene(v(1024,1024),
 {
-    box:[[v()],[v(32,32)],[v(64,64)],[v(0,64)]],
+    block:[[v()],[v(32,32)],[v(64,64)],[v(0,64)]],
     player:[[]],
     cursor: [[]]
 }, {
@@ -13,13 +13,13 @@ GAME.onload.set(function() {
     s0.load();
 })
 
-def("box", class extends Actor {
+def("block", class extends Actor {
     constructor(pos) {
-        super(pos, "box");
+        super(pos, "block");
         this.size = v(32,32);
         this.mask = new Polygon();
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
-        this.sprite = new Sprite(["box"], 1, 0);
+        this.sprite = new Sprite(["block"], 6, 10);
     }
     tick() {
         this.sprite.update();
@@ -108,19 +108,21 @@ def("sword", class extends Actor {
     tick() {
         let prevang = this.aangle.deg;
         this.aangle.between(this.pos.origin, Mouse)
-        this.angle.interpolate(this.aangle, 0.5);
+        this.angle.interpolate(this.aangle, Key.check("mouse") ? 1 : 0.1);
         this.apos.toOrigin(this.pp);
         this.pos.copy(this.apos);
         this.pos.rotate(this.angle);
-        
-        if(Math.abs(prevang - this.aangle.deg) > 30) {
-            let coll = collides(this, Instance.filter(["enemy"]));
-            if(coll.is) {
-                Object.keys(coll.other).forEach(x => {
-                    coll.other[x].forEach(e => {
-                        Instance.destroy(x, e);
+        if(Key.check("mouse")) {
+            if(Math.abs(prevang - this.aangle.deg) > 3) {
+                Instance.spawn("sword_trail", [this.pos, this.angle, this.size.y]);
+                let coll = collides(this, Instance.filter(["enemy"]));
+                if(coll.is) {
+                    Object.keys(coll.other).forEach(x => {
+                        coll.other[x].forEach(e => {
+                            Instance.destroy(x, e);
+                        })
                     })
-                })
+                }
             }
         }
 
@@ -132,6 +134,32 @@ def("sword", class extends Actor {
 
 
 }, undefined, ["weapon"]);
+
+def("crossbow", class extends Actor {}, undefined, ["weapon"])
+
+def("sword_trail", class extends Actor {
+    constructor(pos, angle, width) {
+        super(v(), "sword_trail");
+        this.pos.copy(pos);
+        this.angle.set(angle.deg);
+        this.size = v(64,width);
+    }
+    tick() {
+        this.size.x -= 5;
+        this.size.y -= 5;
+        if(this.size.x < 0) {
+            Instance.destroy(this.name, this.id);
+        }
+    }
+    draw() {
+        ctx.save();
+        ctx.fillStyle = "white";
+        ctx.translate(this.pos.x, this.pos.y);
+        ctx.rotate(this.angle.rad);
+        ctx.fillRect(-this.size.x / 2, -this.size.y, this.size.x, this.size.y);
+        ctx.restore();
+    }
+}, undefined, ["effect","trail"]);
 
 def("cursor", class extends Actor {
     constructor() {
