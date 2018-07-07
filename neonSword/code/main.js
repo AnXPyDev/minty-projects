@@ -1,8 +1,9 @@
-const s0 = new Scene(v(1024,1024),
+const s0 = new Scene(v(1024,576),
 {
-    block:[[v()],[v(32,32)],[v(64,64)],[v(0,64)]],
     player:[[]],
-    cursor: [[]]
+    cursor: [[]],
+    block: [],
+    spawner:[[]]
 }, {
     main:[["bck_black"], "tiled"]
 }, () => {
@@ -21,6 +22,7 @@ def("block", class extends Actor {
         this.mask = new Polygon();
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
         this.sprite = new Sprite(["block"], 6, 10);
+        this.sprite.index = Random.int(0,this.sprite.len - 1);
     }
     tick() {
         this.sprite.update();
@@ -28,11 +30,11 @@ def("block", class extends Actor {
     draw() {
         this.sprite.draw(this.pos, this.size, this.angle);
     }
-}, undefined, ["solid","enemy"]);
+}, undefined, ["solid"]);
 
 def("player", class extends Actor {
     constructor() {
-        super(v(-100,0), "player");
+        super(v(), "player");
         this.size = v(32, 32);
         this.mask = new Polygon();
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
@@ -67,7 +69,6 @@ def("player", class extends Actor {
 
         }()
 
-        let cc = 0;
 
         if(collides(this, Instance.filter(["solid"]), v(this.pos.x + this.spd.x * this.speed, this.pos.y)).is) {
             while(!collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is) {
@@ -92,7 +93,7 @@ def("player", class extends Actor {
     draw() {
         this.sprite.draw(this.pos, this.size, this.angle);
     }
-})
+}, undefined, ["solid"])
 
 def("sword", class extends Actor {
     constructor(player_pos) {
@@ -179,3 +180,52 @@ def("cursor", class extends Actor {
         this.sprite.draw(this.pos, this.size)
     }
 })
+
+def("enemy", class extends Actor {
+    constructor(pos) {
+        super(v(), "enemy");
+        this.pos.copy(pos);
+        this.size = v(32, 32);
+        this.mask = new Polygon();
+        this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
+        this.sprite = new Sprite(["enemy"], 4, 2);
+        this.speed = 4;
+        this.spd = v();
+    }
+    tick() {
+        this.angle.between(this.pos, Instance.get("player", 0).pos);
+        this.spd = this.angle.dir(); 
+
+        if(collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.round(this.spd.x * this.speed), this.pos.y)).is) {
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is) {
+                this.pos.x += Math.sign(this.spd.x);
+            }
+            this.spd.x = 0;
+        }
+
+        this.pos.x += Math.round(this.spd.x * this.speed);
+
+        if(collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.round(this.spd.y * this.speed))).is) {
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.sign(this.spd.y))).is) {
+                this.pos.y += Math.sign(this.spd.y);
+            }
+            this.spd.y = 0;
+        }
+        
+        this.pos.y += Math.round(this.spd.y * this.speed);
+    
+        this.sprite.update();
+    }
+    draw() {
+        this.sprite.draw(this.pos, this.size);
+    }
+}, undefined, ["enemy", "solid"]);
+
+def("spawner", class extends Actor {
+    constructor() {
+        super(v(), "spawner");
+        this.points = [v(-scene.size.x / 2, -scene.size.y / 2), v(scene.size.x / 2, -scene.size.y / 2), v(scene.size.x / 2, scene.size.y / 2), v(-scene.size.x / 2, scene.size.y / 2)];
+        this.loop("spawn" ,() => {Instance.spawn("enemy", [this.points[Random.int(0,3)]])}, 120);   
+    }
+})
+
