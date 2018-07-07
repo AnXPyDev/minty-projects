@@ -19,7 +19,7 @@ def("block", class extends Actor {
     constructor(pos) {
         super(pos, "block");
         this.size = v(32,32);
-        this.mask = new Polygon();
+        this.mask = new Polygon("rect");
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
         this.sprite = new Sprite(["block"], 6, 10);
         this.sprite.index = Random.int(0,this.sprite.len - 1);
@@ -36,7 +36,7 @@ def("player", class extends Actor {
     constructor() {
         super(v(), "player");
         this.size = v(32, 32);
-        this.mask = new Polygon();
+        this.mask = new Polygon("rect");
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
         this.sprite = new Sprite(["player"], 4, 2);
         this.speed = 4;
@@ -103,7 +103,7 @@ def("sword", class extends Actor {
         this.aangle = new Angle();
         this.apos.x = 64;
         this.size = v(64,10);
-        this.mask = new Polygon();
+        this.mask = new Polygon("rect");
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
         this.sprite = new Sprite(["sword"], 1, 0);
         this.depth = 100;    
@@ -186,15 +186,16 @@ def("enemy", class extends Actor {
         super(v(), "enemy");
         this.pos.copy(pos);
         this.size = v(32, 32);
-        this.mask = new Polygon();
+        this.mask = new Polygon("rect");
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
         this.sprite = new Sprite(["enemy"], 4, 2);
         this.speed = 4;
         this.spd = v();
+        this.aa = new Angle("deg", 0);
     }
     tick() {
-        this.angle.between(this.pos, Instance.get("player", 0).pos);
-        this.spd = this.angle.dir(); 
+        this.aa.between(this.pos, Instance.get("player", 0).pos);
+        this.spd = this.aa.dir(); 
 
         if(collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.round(this.spd.x * this.speed), this.pos.y)).is) {
             while(!collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is) {
