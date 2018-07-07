@@ -13,6 +13,14 @@ GAME.onload.set(function() {
     vport.element.style = "cursor:default";
 });
 
+let selectedObject = "main";
+
+function setObject(name) {
+    selectedObject = name;
+}
+
+
+
 def("editor_main", class extends Actor {
     constructor(pos) {
         super(pos);
@@ -27,7 +35,7 @@ def("editor_main", class extends Actor {
         }
     }
     mousedown() {
-        Instance.spawn("main", [Mouse]);
+        Instance.spawn(selectedObject, [Mouse]);
     }
 })
 
