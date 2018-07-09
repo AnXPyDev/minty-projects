@@ -2,9 +2,9 @@ const s0 = new Scene(v(1024,576),
 {
     player:[[]],
     cursor: [[]],
-    block: [[v(32,32)]],
-    enemy:[[v(64,0)],[v(-64,0)]],
-    spawner:[]
+    block: [[v(64,64)], [v(-64,64)], [v(-64, -64)], [v(64, -64)]],
+    enemy:[],
+    spawner:[[]]
 }, {
     main:[["bck_black"], "tiled"]
 }, () => {
@@ -71,8 +71,8 @@ def("player", class extends Actor {
         }()
 
 
-        if(collidesNew(this, Instance.filter(["solid"]), v(this.pos.x + this.spd.x * this.speed, this.pos.y)).is) {
-            while(!collidesNew(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is) {
+        if(collides(this, Instance.filter(["solid"]), v(this.pos.x + this.spd.x * this.speed, this.pos.y)).is) {
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is) {
                 this.pos.x += Math.sign(this.spd.x);
             }
             this.spd.x = 0;
@@ -80,8 +80,8 @@ def("player", class extends Actor {
 
         this.pos.x += this.spd.x * this.speed;
 
-        if(collidesNew(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + this.spd.y * this.speed)).is) {
-            while(!collidesNew(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.sign(this.spd.y))).is) {
+        if(collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + this.spd.y * this.speed)).is) {
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.sign(this.spd.y))).is) {
                 this.pos.y += Math.sign(this.spd.y);
             }
             this.spd.y = 0;
@@ -120,7 +120,7 @@ def("sword", class extends Actor {
             let angdiff = prevang - this.aangle.deg;
             if(Math.abs(angdiff) > 5) {
                 Instance.spawn("sword_trail", [this.pos, this.angle, this.size.y]);
-                let coll = collidesNew(this, Instance.filter(["enemy"]));
+                let coll = collides(this, Instance.filter(["enemy"]));
                 if(coll.is) {
                     Object.keys(coll.other).forEach(x => {
                         coll.other[x].forEach(e => {
@@ -198,8 +198,8 @@ def("enemy", class extends Actor {
         this.aa.between(this.pos, Instance.get("player", 0).pos);
         this.spd = this.aa.dir(); 
 
-        if(collidesNew(this, Instance.filter(["solid"]), v(this.pos.x + Math.round(this.spd.x * this.speed), this.pos.y)).is) {
-            while(!collidesNew(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is) {
+        if(collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.round(this.spd.x * this.speed), this.pos.y)).is) {
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is) {
                 this.pos.x += Math.sign(this.spd.x);
             }
             this.spd.x = 0;
@@ -207,8 +207,8 @@ def("enemy", class extends Actor {
 
         this.pos.x += Math.round(this.spd.x * this.speed);
 
-        if(collidesNew(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.round(this.spd.y * this.speed))).is) {
-            while(!collidesNew(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.sign(this.spd.y))).is) {
+        if(collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.round(this.spd.y * this.speed))).is) {
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.sign(this.spd.y))).is) {
                 this.pos.y += Math.sign(this.spd.y);
             }
             this.spd.y = 0;
@@ -227,7 +227,7 @@ def("spawner", class extends Actor {
     constructor() {
         super(v(), "spawner");
         this.points = [v(-scene.size.x / 2, -scene.size.y / 2), v(scene.size.x / 2, -scene.size.y / 2), v(scene.size.x / 2, scene.size.y / 2), v(-scene.size.x / 2, scene.size.y / 2)];
-        this.loop("spawn" ,() => {Instance.spawn("enemy", [this.points[Random.int(0,3)]])}, 120);   
+        this.loop("spawn" ,() => {if(ins.enemy.length < 5) {Instance.spawn("enemy", [this.points[Random.int(0,3)]])}}, 60);   
     }
 })
 
