@@ -72,8 +72,10 @@ def("player", class extends Actor {
 
 
         if(collides(this, Instance.filter(["solid"]), v(this.pos.x + this.spd.x * this.speed, this.pos.y)).is) {
-            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is) {
+            let i = 0;
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is && i < this.spd.x * this.speed) {
                 this.pos.x += Math.sign(this.spd.x);
+                i++;
             }
             this.spd.x = 0;
         }
@@ -81,8 +83,10 @@ def("player", class extends Actor {
         this.pos.x += this.spd.x * this.speed;
 
         if(collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + this.spd.y * this.speed)).is) {
-            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.sign(this.spd.y))).is) {
+            let i = 0;
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.sign(this.spd.y))).is && i < this.spd.y * this.speed) {
                 this.pos.y += Math.sign(this.spd.y);
+                i++;
             }
             this.spd.y = 0;
         }
@@ -198,18 +202,22 @@ def("enemy", class extends Actor {
         this.aa.between(this.pos, Instance.get("player", 0).pos);
         this.spd = this.aa.dir(); 
 
-        if(collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.round(this.spd.x * this.speed), this.pos.y)).is) {
-            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is) {
+        if(collides(this, Instance.filter(["solid"]), v(this.pos.x + this.spd.x * this.speed, this.pos.y)).is) {
+            let i = 0;
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is && i < this.spd.x * this.speed) {
                 this.pos.x += Math.sign(this.spd.x);
+                i++;
             }
             this.spd.x = 0;
         }
 
         this.pos.x += Math.round(this.spd.x * this.speed);
 
-        if(collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.round(this.spd.y * this.speed))).is) {
-            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.sign(this.spd.y))).is) {
+        if(collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + this.spd.y * this.speed)).is) {
+            let i = 0;
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.sign(this.spd.y))).is && i < this.spd.y * this.speed) {
                 this.pos.y += Math.sign(this.spd.y);
+                i++;
             }
             this.spd.y = 0;
         }
@@ -227,7 +235,7 @@ def("spawner", class extends Actor {
     constructor() {
         super(v(), "spawner");
         this.points = [v(-scene.size.x / 2, -scene.size.y / 2), v(scene.size.x / 2, -scene.size.y / 2), v(scene.size.x / 2, scene.size.y / 2), v(-scene.size.x / 2, scene.size.y / 2)];
-        this.loop("spawn" ,() => {if(ins.enemy.length < 5) {Instance.spawn("enemy", [this.points[Random.int(0,3)]])}}, 60);   
+        this.loop("spawn" ,() => {if(ins.enemy.length < 50) {Instance.spawn("enemy", [this.points[Random.int(0,3)]])}}, 30);   
     }
 })
 
