@@ -43,7 +43,11 @@ def("player", class extends Actor {
         this.speed = 4;
         this.spd = v();
         this.lastpos = v();
+        this.weapons = ["sword", "crossbow"];
+        this.weapon = 0;
         Instance.spawn("sword", [this.pos]);
+        Instance.spawn("crossbow", [this.pos]);
+        Instance.get("crossbow", 0).togglePause();
     }
     tick() {
         this.spd.x = function() {
@@ -70,6 +74,11 @@ def("player", class extends Actor {
 
         }()
 
+        when(Key.check("q"), () => {
+            Instance.get(this.weapons[this.weapon], 0).togglePause();
+            this.weapon = wrap_np(this.weapon + 1, 0 ,1);
+            Instance.get(this.weapons[this.weapon], 0).togglePause();
+        })
 
         if(collides(this, Instance.filter(["solid"]), v(this.pos.x + this.spd.x * this.speed, this.pos.y)).is) {
             let i = 0;
@@ -140,11 +149,112 @@ def("sword", class extends Actor {
     draw() {
         this.sprite.draw(this.pos, this.size, this.angle);
     }
+    togglePause() {
+        this.isPaused = !this.isPaused;
+    }
 
 
 }, undefined, ["weapon"]);
 
-def("crossbow", class extends Actor {}, undefined, ["weapon"])
+def("crossbow", class extends Actor {
+    constructor(player_pos) {
+        super(v(), "crossbow");
+        this.pp = player_pos;
+        this.apos = v();
+        this.aangle = new Angle();
+        this.apos.x = 48;
+        this.size = v(48,48);
+        this.mask = new Polygon("rect");
+        this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
+        this.sprite = new Sprite(["crossbow"], 2, 0);
+        this.depth = 100;    
+        this.counter = 0;
+        this.counterLen = 60;
+        this.arrow = null;
+    }
+    tick() {
+        let prevang = this.aangle.deg;
+        this.aangle.between(this.pos.origin, Mouse)
+        this.angle.interpolate(this.aangle, 0.5);
+        this.apos.toOrigin(this.pp);
+        this.pos.copy(this.apos);
+        this.pos.rotate(this.angle);
+        this.counter = clamp(this.counter - 1, 0, this.counterLen);
+        
+        when(this.counter == 0, () => {
+            this.arrow = Instance.get("arrow", Instance.spawn("arrow", [this.pp, this.angle]));
+            this.sprite.index = 1;
+        })
+        when(this.counter == 0 && Key.check("mouse"), () => {
+            this.arrow.fire();
+            this.arrow = null;
+            this.counter = this.counterLen;
+            this.sprite.index = 0;
+        })
+
+        this.sprite.update();
+    }
+    draw() {
+        this.sprite.draw(this.pos, this.size, this.angle);
+    }
+    togglePause() {
+        this.isPaused = !this.isPaused;
+        if(this.arrow) {
+            this.arrow.isPaused = !this.arrow.isPaused;
+        }
+    }
+}, undefined, ["weapon"])
+
+def("arrow", class extends Actor {
+    constructor(pos, angle) {
+        super(v(), "arrow");
+        this.pp = pos;
+        this.angle = angle;
+        this.apos = v();
+        this.apos.x = 64;
+        this.speed = 20;
+        this.size = v(48, 8);
+        this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
+        this.isFired = false;
+        this.sprite = new Sprite(["arrow"], 1, 0);
+        this.mult = v();
+        this.counter = 60 * 2;
+    }
+    tick() {
+        if(!this.isFired) {
+            this.apos.toOrigin(this.pp);
+            this.pos.copy(this.apos);
+            this.pos.rotate(this.angle);
+            this.sprite.update();
+        } else {
+            this.pos.x += this.mult.x * this.speed;
+            this.pos.y += this.mult.y * this.speed;
+            let coll = collides(this, Instance.filter(["enemy"]));
+            if(coll.is) {
+                this.counter --;
+                let keys = Object.keys(coll.other);
+                for(let i = 0; i < keys.length; i++) {
+                    for(let e = 0; e < coll.other[keys[i]].length; e++) {
+                        Instance.destroy(keys[i], coll.other[keys[i]][e]);
+                    }
+                }
+                if(this.counter == 0) {
+                    Instance.destroy("arrow", this.id);
+                }
+            }
+            
+        }
+    }
+    draw() {
+        this.sprite.draw(this.pos, this.size, this.angle);
+    }
+    fire() {
+        this.isFired = true;
+        this.mult = this.angle.dir();
+        let ag = new Angle("deg", this.angle.deg);
+        this.angle = ag;
+    }
+}, undefined, ["weapon"]);
 
 def("sword_trail", class extends Actor {
     constructor(pos, angle, width) {
@@ -194,7 +304,7 @@ def("enemy", class extends Actor {
         this.mask = new Polygon("rect");
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
         this.sprite = new Sprite(["enemy"], 4, 2);
-        this.speed = 4;
+        this.speed = 2;
         this.spd = v();
         this.aa = new Angle("deg", 0);
     }
@@ -235,7 +345,7 @@ def("spawner", class extends Actor {
     constructor() {
         super(v(), "spawner");
         this.points = [v(-scene.size.x / 2, -scene.size.y / 2), v(scene.size.x / 2, -scene.size.y / 2), v(scene.size.x / 2, scene.size.y / 2), v(-scene.size.x / 2, scene.size.y / 2)];
-        this.loop("spawn" ,() => {if(ins.enemy.length < 50) {Instance.spawn("enemy", [this.points[Random.int(0,3)]])}}, 30);   
+        this.loop("spawn" ,() => {if(ins.enemy.length < 50) {Instance.spawn("enemy", [this.points[Random.int(0,3)]])}}, 60);   
     }
 })
 

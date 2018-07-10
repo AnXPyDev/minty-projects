@@ -1,1 +1,1 @@
-{"name":"Default","code":{"js":["main.js"],"json":[]},"assets":{"images":["bck_black.png","block.png","box.png","crossbow.png","cursor.png","enemy.png","player.png","sword.png"],"sounds":[]},"imgSmoothing":false}
+{"name":"Default","code":{"js":["main.js"],"json":[]},"assets":{"images":["arrow.png","bck_black.png","block.png","box.png","crossbow.png","cursor.png","enemy.png","player.png","sword.png"],"sounds":[]},"imgSmoothing":false}
