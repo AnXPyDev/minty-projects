@@ -40,7 +40,7 @@ def("player", class extends Actor {
         this.mask = new Polygon("rect");
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
         this.sprite = new Sprite(["player"], 4, 2);
-        this.speed = 4;
+        this.speed = 6;
         this.spd = v();
         this.lastpos = v();
         this.weapons = ["sword", "crossbow"];
@@ -228,8 +228,6 @@ def("arrow", class extends Actor {
             this.pos.rotate(this.angle);
             this.sprite.update();
         } else {
-            this.pos.x += this.mult.x * this.speed;
-            this.pos.y += this.mult.y * this.speed;
             let coll = collides(this, Instance.filter(["enemy"]));
             if(coll.is) {
                 this.counter --;
@@ -243,6 +241,8 @@ def("arrow", class extends Actor {
                     Instance.destroy("arrow", this.id);
                 }
             }
+            this.pos.x += this.mult.x * this.speed;
+            this.pos.y += this.mult.y * this.speed;
             
         }
     }
