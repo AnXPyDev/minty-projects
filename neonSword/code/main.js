@@ -12,10 +12,6 @@ const s0 = new Scene(v(1024,576),
     vport.resize(v(1024, 576))
 }, () => {}, 60,60);
 
-GAME.onload.set(function() {
-    s0.load();
-})
-
 def("block", class extends Actor {
     constructor(pos) {
         super(pos, "block");
