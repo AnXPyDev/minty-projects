@@ -32,7 +32,7 @@ function prect(sz) {
 
 def("main", class extends Actor {
     constructor() {
-        super(v());
+        super(v(), "main");
         this.pos.y = Math.floor(scene.size.y * 0.8 - scene.size.y / 2);
         this.pos.x = Math.floor(scene.size.x * 0.5 - scene.size.x / 2);
         this.mask = prect(v(1,1));
@@ -48,6 +48,7 @@ def("main", class extends Actor {
     }
     tick() {
         this.pos.x = lerp(this.pos.x, Mouse.x, 0.5 * dt, true);
+        this.sprite.update();
     }
     draw() {
         //let p = MorphPolygon(this.mask, this);
@@ -59,14 +60,15 @@ def("main", class extends Actor {
 
 def("spawner", class extends Actor {
     constructor() {
-        super(v());
+        super(v(), "spawner");
+        this.isCollidable = false;
         this.loop("spn", () => {Instance.spawn("enemy", [])}, 5);
     }
 }) 
 
 def("enemy", class extends Actor {
     constructor() {
-        super(v());
+        super(v(), "enemy");
         this.pos.x =  Math.floor(Math.random() * scene.size.x - scene.size.x / 2);
         this.pos.y = -scene.size.y / 2 - 60;
         this.size = v(Random.int(20,40),Random.int(40,80));
@@ -99,7 +101,7 @@ def("enemy", class extends Actor {
 
 def("bullet", class extends Actor {
     constructor(pos) {
-        super(pos);
+        super(pos, "bullet");
         this.mask = prect(v(5,20));
         this.size = v(5,20);
         this.spd = 15;
