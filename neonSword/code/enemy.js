@@ -15,27 +15,27 @@ def("enemy", class extends Actor {
         this.aa.between(this.pos, Instance.get("player", 0).pos);
         this.spd = this.aa.dir(); 
 
-        if(collides(this, Instance.filter(["solid"]), v(this.pos.x + this.spd.x * this.speed, this.pos.y)).is) {
+        if(collides(this, Instance.filter(["solid"]), v(this.pos.x + this.spd.x * this.speed * dt, this.pos.y)).is) {
             let i = 0;
-            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is && i < this.spd.x * this.speed) {
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is && i < this.spd.x * this.speed * dt) {
                 this.pos.x += Math.sign(this.spd.x);
                 i++;
             }
             this.spd.x = 0;
         }
 
-        this.pos.x += Math.round(this.spd.x * this.speed);
+        this.pos.x += this.spd.x * this.speed * dt;
 
-        if(collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + this.spd.y * this.speed)).is) {
+        if(collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + this.spd.y * this.speed * dt)).is) {
             let i = 0;
-            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.sign(this.spd.y))).is && i < this.spd.y * this.speed) {
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.sign(this.spd.y))).is && i < this.spd.y * this.speed * dt) {
                 this.pos.y += Math.sign(this.spd.y);
                 i++;
             }
             this.spd.y = 0;
         }
         
-        this.pos.y += Math.round(this.spd.y * this.speed);
+        this.pos.y += this.spd.y * this.speed * dt;
     
         this.sprite.update();
         insertDraw(() => {
@@ -71,7 +71,7 @@ def("blood", class extends Actor {
         this.angle = angle;
         this.size = v(32,32);
         this.depth = 2;
-        this.sprite = new Sprite(["blood"], 5, 60 / 5);
+        this.sprite = new Sprite(["blood"], 5, 60 / 5 * (1 / dt));
     }
     tick() {
         if(this.sprite.index == this.sprite.len - 1) {
