@@ -7,9 +7,9 @@ const s_title = new Scene("title",v(), {
 }, 60, 60)
 
 
-GAME.onload.set(function() {
+GAME.onload = function() {
     s_title.load();
-})
+}
 
 def("title", class extends Actor {
     constructor() {

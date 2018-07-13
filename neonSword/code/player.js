@@ -14,15 +14,21 @@ const s0 = new Scene("s0",v(1024,576),
 
 const LIGHT = new Sprite(["light"], 1, 0);
 
-GAME.onbeforetick.set(function() {
+GAME.onbeforetick = function() {
     LIGHT.update();
     camera.angle.set(Math.sin(new Date() / 1000) * 1 - 0.5);
     camera.scale.x = camera.scale.y = 1 +  (Math.sin(new Date() / (1000  * (1 / dt))) * 0.025 - 0.0125);
+    
     if(scene.name == "s0") {
-        camera.pos.x = lerp(camera.pos.x, ins.player[0].pos.x, 0.05 * dt);
-        camera.pos.y = lerp(camera.pos.y, ins.player[0].pos.y, 0.05 * dt);
+        if(!Key.check("shift")) {
+            camera.pos.x = lerp(camera.pos.x, ins.player[0].pos.x, 0.05 * dt);
+            camera.pos.y = lerp(camera.pos.y, ins.player[0].pos.y, 0.05 * dt);
+        } else {
+            camera.pos.x = lerp(camera.pos.x, lerp(ins.player[0].pos.x, Mouse.x, 0.75), 0.05 * dt);
+            camera.pos.y = lerp(camera.pos.y, lerp(ins.player[0].pos.y, Mouse.y, 0.75), 0.05 * dt);
+        }
     }
-})
+}
 
 function insertDraw(fn, depth)  {
     $MAIN.cLAY.insert(new Layer(depth, fn));
@@ -38,12 +44,14 @@ def("player", class extends Actor {
         this.speed = 6;
         this.spd = v();
         this.lastpos = v();
-        this.weapons = ["sword", "crossbow"];
+        this.weapons = ["sword", "crossbow", "shotgun"];
         this.weapon = 0;
         this.depth = 10;
         Instance.spawn("sword", [this.pos]);
         Instance.spawn("crossbow", [this.pos]);
+        Instance.spawn("shotgun", [this.pos]);
         Instance.get("crossbow", 0).togglePause();
+        Instance.get("shotgun", 0).togglePause();
     }
     tick() {
         this.spd.x = function() {
@@ -72,7 +80,7 @@ def("player", class extends Actor {
 
         when(Key.check("q"), () => {
             Instance.get(this.weapons[this.weapon], 0).togglePause();
-            this.weapon = wrap_np(this.weapon + 1, 0 ,1);
+            this.weapon = wrap_np(this.weapon + 1, 0 ,2);
             Instance.get(this.weapons[this.weapon], 0).togglePause();
         })
 
@@ -288,6 +296,97 @@ def("sword_trail", class extends Actor {
         ctx.restore();
     }
 }, undefined, ["effect","trail"]);
+
+def("shotgun", class extends Actor {
+    constructor(player_pos) {
+        super(v(), "shotgun");
+        this.pp = player_pos;
+        this.apos = v();
+        this.aangle = new Angle();
+        this.apos.x = 64;
+        this.size = v(64,12);
+        this.mask = new Polygon("rect");
+        this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
+        this.sprite = new Sprite(["shotgun"], 6, 12);
+        this.depth = 100;    
+    }
+    tick() {
+        let prevang = this.aangle.deg;
+        this.aangle.between(this.pos.origin, Mouse)
+        this.angle.interpolate(this.aangle, 0.5 * dt);
+        this.apos.toOrigin(this.pp);
+        this.pos.copy(this.apos);
+        this.pos.rotate(this.angle);
+
+        when(this.sprite.index == 5, () => {
+            this.sprite.setFps(0);
+        })
+
+        when(this.sprite.index == 5 && Key.check("mouse"), () => {
+            this.fire();
+            this.sprite.index = 0;
+            this.sprite.setFps(12);
+        })
+
+        this.sprite.update();
+    }
+    draw() {
+        this.sprite.draw(this.pos, this.size, this.angle);
+    }
+    togglePause() {
+        this.isPaused = !this.isPaused;
+    }
+    fire() {
+        for(let i = 0; i < 4; i++) {
+            Instance.spawn("shotgun_shell", [this.pos, new Angle("deg", this.angle.deg + [-15,-5,5,15][i])]);
+        }
+    }
+}, undefined, ["weapon"])
+
+def("shotgun_shell", class extends Actor {
+    constructor(pos, angle) {
+        super(v(), "shotgun_shell");
+        this.pp = pos;
+        this.angle = angle;
+        this.apos = v();
+        this.apos.x = 64;
+        this.speed = 20;
+        this.size = v(16, 4);
+        this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
+        this.isFired = false;
+        this.sprite = new Sprite(["shotgun_shell"], 4, 4);
+        this.depth = 150;
+        this.mult = this.angle.dir();
+        let ag = new Angle("deg", this.angle.deg);
+        this.angle = ag;
+        this.depth = 12;
+        this.counter = 60 * 2;
+    }
+    tick() {
+        let coll = collides(this, Instance.filter(["enemy"]));
+        this.counter -= 1 * dt;
+        if(coll.is) {
+            
+            let keys = Object.keys(coll.other);
+            for(let i = 0; i < keys.length; i++) {
+                for(let e = 0; e < coll.other[keys[i]].length; e++) {
+                    Instance.get(keys[i], coll.other[keys[i]][e]).hit(this.angle);
+                }
+            }
+            Instance.destroy("shotgun_shell", this.id);
+            
+        }
+        if(this.counter < 0) {
+            Instance.destroy("shotgun_shell", this.id);
+        }
+        this.pos.x += this.mult.x * this.speed * dt;
+        this.pos.y += this.mult.y * this.speed * dt;
+        this.sprite.update();
+    }
+    draw() {
+        this.sprite.draw(this.pos, this.size, this.angle);
+    }
+}, undefined, ["weapon"]);
 
 def("cursor", class extends Actor {
     constructor() {
