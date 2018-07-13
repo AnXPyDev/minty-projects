@@ -71,7 +71,8 @@ def("blood", class extends Actor {
         this.angle = angle;
         this.size = v(64,64);
         this.depth = 2;
-        this.sprite = new Sprite(["blood"], 5, 60 / 5 * (1 / dt));
+        this.sprite = new Sprite(["blood", "blood_2"], 5, 60 / 5 * (1 / dt));
+        this.sprite.img.numix = Random.int(0,1);
     }
     tick() {
         if(this.sprite.index == this.sprite.len - 1) {
