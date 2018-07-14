@@ -1,1 +1,1 @@
-{"name":"Default","code":{"js":["main.js"],"json":[]},"assets":{"images":["grid.png"],"sounds":[]},"imgSmoothing":false}
+{"name":"Default","code":{"js":["main.js"],"json":[]},"assets":{"images":["cursor.png","grid.png"],"sounds":[]},"imgSmoothing":false}
