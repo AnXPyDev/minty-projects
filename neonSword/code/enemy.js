@@ -6,7 +6,7 @@ def("enemy", class extends Actor {
         this.mask = new Polygon("rect");
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
         this.sprite = new Sprite(["enemy"], 4, 2);
-        this.speed = 2;
+        this.speed = 8;
         this.spd = v();
         this.depth = 9
         this.aa = new Angle("deg", 0);
@@ -71,7 +71,8 @@ def("blood", class extends Actor {
         this.angle = angle;
         this.size = v(32,32);
         this.depth = 2;
-        this.sprite = new Sprite(["blood"], 5, 60 / 5 * (1 / dt));
+        this.sprite = new Sprite(["blood", "blood_2"], 5, 60 / 5 * (1 / dt));
+        this.sprite.img.numix = Random.int(0,1);
     }
     tick() {
         if(this.sprite.index == this.sprite.len - 1) {
