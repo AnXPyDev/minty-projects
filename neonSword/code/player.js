@@ -2,7 +2,7 @@ const s0 = new Scene("s0",v(1024,576),
 {
     player:[[]],
     cursor: [[]],
-    block: [[v(64,64)], [v(-64,64)], [v(-64, -64)], [v(64, -64)]],
+    block: cfg.s0.block,
     enemy:[],
     spawner:[[]]
 }, {
@@ -11,6 +11,8 @@ const s0 = new Scene("s0",v(1024,576),
     bck.main.setScale(v(2,2));
     vport.resize(v(1024, 576))
 }, () => {}, 60,60);
+
+console.log(cfg);
 
 const LIGHT = new Sprite(["light"], 1, 0);
 
@@ -346,7 +348,7 @@ def("shotgun", class extends Actor {
 def("shotgun_shell", class extends Actor {
     constructor(pos, angle) {
         super(v(), "shotgun_shell");
-        this.pp = pos;
+        this.pos.copy(pos);
         this.angle = angle;
         this.apos = v();
         this.apos.x = 64;

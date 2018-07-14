@@ -6,7 +6,7 @@ def("enemy", class extends Actor {
         this.mask = new Polygon("rect");
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
         this.sprite = new Sprite(["enemy"], 4, 2);
-        this.speed = 8;
+        this.speed = 2;
         this.spd = v();
         this.depth = 9
         this.aa = new Angle("deg", 0);
@@ -66,6 +66,7 @@ def("blood", class extends Actor {
     constructor(pos, angle) {
         super(v(), "blood");
         this.pos.copy(pos);
+        this.pos.setorigin(pos);
         this.pos.x += 16;
         this.pos.rotate(angle);
         this.angle = angle;
