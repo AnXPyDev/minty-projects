@@ -12,8 +12,6 @@ const s0 = new Scene("s0",v(1024,576),
     vport.resize(v(1024, 576))
 }, () => {}, 60,60);
 
-console.log(cfg);
-
 const LIGHT = new Sprite(["light"], 1, 0);
 
 GAME.onbeforetick = function() {
@@ -43,7 +41,7 @@ def("player", class extends Actor {
         this.mask = new Polygon("rect");
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
         this.sprite = new Sprite(["player"], 4, 2);
-        this.speed = 6;
+        this.speed = 8;
         this.spd = v();
         this.lastpos = v();
         this.weapons = ["sword", "crossbow", "shotgun"];
@@ -121,7 +119,7 @@ def("player", class extends Actor {
         
         this.sprite.draw(this.pos, this.size, this.angle);
     }
-}, undefined, ["solid"])
+}, ["solid"])
 
 def("sword", class extends Actor {
     constructor(player_pos) {
@@ -169,7 +167,7 @@ def("sword", class extends Actor {
     }
 
 
-}, undefined, ["weapon"]);
+}, ["weapon"]);
 
 def("crossbow", class extends Actor {
     constructor(player_pos) {
@@ -219,7 +217,7 @@ def("crossbow", class extends Actor {
             this.arrow.isPaused = !this.arrow.isPaused;
         }
     }
-}, undefined, ["weapon"])
+}, ["weapon"])
 
 def("arrow", class extends Actor {
     constructor(pos, angle) {
@@ -272,7 +270,7 @@ def("arrow", class extends Actor {
         let ag = new Angle("deg", this.angle.deg);
         this.angle = ag;
     }
-}, undefined, ["weapon"]);
+}, ["weapon"]);
 
 def("sword_trail", class extends Actor {
     constructor(pos, angle, width) {
@@ -297,7 +295,7 @@ def("sword_trail", class extends Actor {
         ctx.fillRect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
         ctx.restore();
     }
-}, undefined, ["effect","trail"]);
+}, ["effect","trail"]);
 
 def("shotgun", class extends Actor {
     constructor(player_pos) {
@@ -343,7 +341,7 @@ def("shotgun", class extends Actor {
             Instance.spawn("shotgun_shell", [this.pos, new Angle("deg", this.angle.deg + [-15,-5,5,15][i])]);
         }
     }
-}, undefined, ["weapon"])
+}, ["weapon"])
 
 def("shotgun_shell", class extends Actor {
     constructor(pos, angle) {
@@ -388,7 +386,7 @@ def("shotgun_shell", class extends Actor {
     draw() {
         this.sprite.draw(this.pos, this.size, this.angle);
     }
-}, undefined, ["weapon"]);
+}, ["weapon"]);
 
 def("cursor", class extends Actor {
     constructor() {
