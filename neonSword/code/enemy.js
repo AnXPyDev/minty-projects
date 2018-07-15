@@ -52,7 +52,7 @@ def("enemy", class extends Actor {
         Instance.spawn("blood", [this.pos, angle]);
         Instance.destroy("enemy", this.id);
     }
-}, undefined, ["enemy", "solid"]);
+}, ["enemy", "solid"]);
 
 def("spawner", class extends Actor {
     constructor() {
