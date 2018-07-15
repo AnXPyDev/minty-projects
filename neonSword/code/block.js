@@ -17,3 +17,4 @@ def("block", class extends Actor {
         this.sprite.draw(this.pos, this.size, this.angle);
     }
 }, undefined, ["solid"]);
+
