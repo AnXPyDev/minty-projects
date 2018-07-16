@@ -12,7 +12,7 @@ These are projects for minty game engine
 
     $ npm i
 
-    $ sh compile.sh (insert the name of the project you want to run)
+    $ bash compile.sh (insert the name of the project you want to run)
 
-    $ sh run.sh
+    $ bash run.sh
     
