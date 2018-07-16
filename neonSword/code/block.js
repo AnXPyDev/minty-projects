@@ -1,6 +1,5 @@
 def("block", class extends Actor {
     constructor(x,y) {
-        console.log(x,y);
         super(v(x,y), "block");
         this.size = v(32,32);
         this.mask = new Polygon("rect");
@@ -16,5 +15,5 @@ def("block", class extends Actor {
     draw() {
         this.sprite.draw(this.pos, this.size, this.angle);
     }
-}, undefined, ["solid"]);
+}, ["solid"]);
 

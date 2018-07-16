@@ -1,12 +1,10 @@
 // Initialize a Scene
-const s0 = new Scene("s0", v(640, 640), 
-{
+const s0 = new Scene("s0", v(640, 640), {
     // Spawn objects
     paddle:[[]],
     paddle_ai:[[]],
     ball:[[]]
-},
-{
+},{
     // Spawn background
     main:["noimage", "solid", "black"]
 },() => {
@@ -30,11 +28,7 @@ def("paddle", class extends Actor {
         this.pos.y = lerp(this.pos.y, Mouse.y, 0.1);
     }
     draw() {
-        ctx.save();
-        ctx.translate(this.pos.x, this.pos.y);
-        ctx.fillStyle = "white";
-        ctx.fillRect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
-        ctx.restore();
+        Draw.rect(this.size, this.pos, "white");
     }
 }, ["paddle"]);
 
@@ -72,10 +66,6 @@ def("ball", class extends Actor {
         this.pos.y += this.dir.y;
     }
     draw() {
-        ctx.save();
-        ctx.translate(this.pos.x,this.pos.y);
-        ctx.fillStyle = "white";
-        ctx.fillRect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
-        ctx.restore();
+        Draw.ellipse(this.size, this.pos, "white");
     }
 });

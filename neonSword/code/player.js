@@ -12,8 +12,6 @@ const s0 = new Scene("s0",v(1024,576),
     vport.resize(v(1024, 576))
 }, () => {}, 60,60);
 
-console.log(cfg);
-
 const LIGHT = new Sprite(["light"], 1, 0);
 
 GAME.onbeforetick = function() {
@@ -43,7 +41,7 @@ def("player", class extends Actor {
         this.mask = new Polygon("rect");
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
         this.sprite = new Sprite(["player"], 4, 2);
-        this.speed = 6;
+        this.speed = 8;
         this.spd = v();
         this.lastpos = v();
         this.weapons = ["sword", "crossbow", "shotgun"];
