@@ -67,5 +67,6 @@ def("ball", class extends Actor {
     }
     draw() {
         Draw.ellipse(this.size, this.pos, "white");
+        shader_brighten.apply(v(0,0), v(100,100), [4]);
     }
 });

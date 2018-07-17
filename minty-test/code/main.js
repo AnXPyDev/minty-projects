@@ -1,13 +1,13 @@
-const sc0 = new Scene(v(1024, 1024), 
+const sc0 = new Scene("sc0", v(1024, 1024), 
     {main:[[]],main1:[[]]},{main:cfg.bckpreset.main},() => {
         vport.resize(v(512, 512));
         vport.element.style.cursor = "default";
         bck.main.scale = v(0.25,0.25);
     }, () => {}, 60, 15);
 
-GAME.onload.set(function() {
+GAME.onload = function() {
     sc0.load();
-})
+}
 
 def("main", class extends Actor {
     constructor() {
@@ -58,6 +58,11 @@ def("main", class extends Actor {
     }
     draw() {
         this.sprite.draw(this.pos, this.size, this.angle);
+        shader_brighten.apply(
+            v(this.pos.x - this.size.x / 2, this.pos.y - this.size.y / 2),
+            v(this.pos.x + this.size.x / 2, this.pos.y + this.size.y / 2),
+            [2]
+        )
     }
 })
 
@@ -70,7 +75,7 @@ def("main1", class extends Actor {
         this.spd = v();
         this.speed = 0;
         this.path = new Path([v(-50,-50),v(50,-50),v(50,50),v(-50,50)]);
-        this.path.assignClient(this.pos).point = this.pos;
+        this.path.addClient(this.pos).point = this.pos;
         this.path.clients[0].speed = 5;
     }
     tick() {
