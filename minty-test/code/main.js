@@ -1,121 +1,30 @@
-const sc0 = new Scene("sc0", v(1024, 1024), 
-    {main:[[]],main1:[[]]},{main:cfg.bckpreset.main},() => {
-        vport.resize(v(512, 512));
-        vport.element.style.cursor = "default";
-        bck.main.scale = v(0.25,0.25);
-    }, () => {}, 60, 15);
+const s0 = new Scene("s0", v(640,640),{
+    main:[[]]
+}, {
+    main:[["noimage"], "solid", "black"]
+}, () => {
+    vport.resize(v(640,640));
+}, () => {}, 60,60);
 
 GAME.onload = function() {
-    sc0.load();
+    s0.load();
 }
+
+const sh_invert = new Shader(
+    function(c) {return [true, 1]},
+    function(c, args) {
+        return new Color(
+            255,255,255,
+            255
+        )
+    }
+)
 
 def("main", class extends Actor {
     constructor() {
         super(v(), "main");
-        this.sprite = new Sprite(["player"], 1, 0);
-        this.sprite.attach("main", ["att"], 1, 0, 1);
-        this.size = v(32,32);
-        this.spd = v();
-        this.speed = 10;
-        this.path = new Path([v(-150,-150),v(150,-150), v(150,150), v(0,200), v(-150,150)]);
-        this.path.addClient(this.pos).speed = 5;
-    }
-    tick() {
-        this.spd.x = function() {
-            if (Key.check("a") && Key.check("d")) {
-                return 0
-            } else if (Key.check("a")) {
-                return -1;
-            } else if (Key.check("d")) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }()
-        this.spd.y = function() {
-            if (Key.check("w") && Key.check("s")) {
-                return 0
-            } else if (Key.check("w")) {
-                return -1;
-            } else if (Key.check("s")) {
-                return 1;
-            } else {
-                return 0;
-            }
-
-        }()
-        this.pos.x += this.spd.x * this.speed;
-        this.pos.y += this.spd.y * this.speed;
-        if(this.spd.x != 0 || this.spd.y != 0) {
-            bck.main.img.numix = 1;
-        } else {
-            bck.main.img.numix = 0;
-        }
-        bck.main.scale.x = bck.main.scale.y = Math.abs(Math.sin(new Date() / 1000)) + 0.7;
-        
-        this.angle.between(this.pos, Mouse);
-        this.sprite.update();
     }
     draw() {
-        this.sprite.draw(this.pos, this.size, this.angle);
-        shader_brighten.apply(
-            v(this.pos.x - this.size.x / 2, this.pos.y - this.size.y / 2),
-            v(this.pos.x + this.size.x / 2, this.pos.y + this.size.y / 2),
-            [2]
-        )
+        sh_invert.apply(v(-10000,-10000), v(10000,10000));
     }
-})
-
-def("main1", class extends Actor {
-    constructor() {
-        super(v(), "main");
-        this.sprite = new Sprite(["player"], 1, 0);
-        this.sprite.attach("main", ["att"], 1, 0, 1);
-        this.size = v(32,32);
-        this.spd = v();
-        this.speed = 0;
-        this.path = new Path([v(-50,-50),v(50,-50),v(50,50),v(-50,50)]);
-        this.path.addClient(this.pos).point = this.pos;
-        this.path.clients[0].speed = 5;
-    }
-    tick() {
-        this.spd.x = function() {
-            if (Key.check("a") && Key.check("d")) {
-                return 0
-            } else if (Key.check("a")) {
-                return -1;
-            } else if (Key.check("d")) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }()
-        this.spd.y = function() {
-            if (Key.check("w") && Key.check("s")) {
-                return 0
-            } else if (Key.check("w")) {
-                return -1;
-            } else if (Key.check("s")) {
-                return 1;
-            } else {
-                return 0;
-            }
-
-        }()
-        this.pos.x += this.spd.x * this.speed;
-        this.pos.y += this.spd.y * this.speed;
-        if(this.spd.x != 0 || this.spd.y != 0) {
-            bck.main.img.numix = 1;
-        } else {
-            bck.main.img.numix = 0;
-        }
-        bck.main.scale.x = bck.main.scale.y = Math.abs(Math.sin(new Date() / 1000)) + 0.7;
-        
-        this.angle.between(this.pos, Mouse);
-        this.sprite.update();
-    }
-    draw() {
-        this.sprite.draw(this.pos, this.size, this.angle);
-    }
-
 })
