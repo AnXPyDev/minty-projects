@@ -74,7 +74,6 @@ def("asteroid", class extends Actor {
             this.angle.between(this.pos, v());
             this.angle.set(this.angle.deg + Random.int(-25,25));
         }
-        this.sprite = new Sprite(["asteroid"], 1, 0);
         this.size = v(asteroidSizes[ix], asteroidSizes[ix]);
         this.speed = Random.int(1,2);
     }
@@ -82,13 +81,12 @@ def("asteroid", class extends Actor {
         let dir = this.angle.dir();
         this.pos.x += this.speed * dir.x;
         this.pos.y += this.speed * dir.y;
-        this.sprite.update();
         if(this.pos.x > 450 || this.pos.x < -450 || this.pos.y > 606 || this.pos.y < -606) {
             Instance.destroy("asteroid", this.id);
         }
     }
     draw() {
-        this.sprite.draw(this.pos, this.size);
+        Draw.ellipseS(this.size, this.pos, "white", 1);
     }
     hit() {
         if (this.ix < asteroidSizes.length - 1) {
@@ -98,7 +96,7 @@ def("asteroid", class extends Actor {
         Instance.destroy("asteroid", this.id);
     }
     
-}, ["enemy"]);
+}, ["solid"]);
 
 def("bullet", class extends Actor {
     constructor(pos, angle) {
@@ -114,10 +112,10 @@ def("bullet", class extends Actor {
         let coll = collides(this, ["asteroid"]);
         if(coll.is) {
             Instance.get("asteroid", coll.other.asteroid[0]).hit();
-            Instance.destroy("bullet", this.id);
+            this.angle.set(this.angle.deg + 90);
         }
         if(this.pos.x > 450 || this.pos.x < -450 || this.pos.y > 606 || this.pos.y < -606) {
-            Instance.destroy("bullet", this.id);
+            this.angle.set(this.angle.deg + 90);
         }
     }
     draw() {
