@@ -1,52 +1,47 @@
 def("player", class extends Actor {
     constructor() {
         super(v(), "player");
-        this.speed = 4;
+        this.speed = 8;
+        this.jumpspeed = 32;
         this.spd = v();
         this.size = v(32,32);
+
+        this.isJump = false;
     }
     tick() {
-        this.spd.x = function() {
-            if (Key.check("a") && Key.check("d")) {
-                return 0
-            } else if (Key.check("a")) {
-                return -1;
-            } else if (Key.check("d")) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }()
+        this.key_left = -Key.check("a");
+        this.key_right = Key.check("d");
+        this.key_jump = false;
+        
+        when(Key.check(" "), () => {
+            this.key_jump = true;
+        })
 
-        this.spd.y = function() {
-            if(Key.check(" ")) {
-                return -scene.vars.gravity;
-            } else {
-                return scene.vars.gravity;
-            }
-        }();
+        this.move = this.key_left + this.key_right;
+        this.spd.x = this.speed * this.move;
+        if(this.spd.y < 10) {this.spd.y += scene.vars.gravity}
 
-        if(collides(this, Instance.filter(["solid", "static"]), v(this.pos.x + this.spd.x * this.speed * dt, this.pos.y)).is) {
-            let i = 0;
-            while(!collides(this, Instance.filter(["solid", "static"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is && i < this.spd.x * this.speed  * dt) {
+        if(collides(this, Instance.filter(["solid", "static"]), v(this.pos.x, this.pos.y + 1)).is) {
+            this.spd.y = this.key_jump * -this.jumpspeed;
+        }
+
+        if(collides(this, Instance.filter(["solid", "static"]), v(this.pos.x + this.spd.x, this.pos.y)).is) {
+            while(!collides(this, Instance.filter(["solid", "static"]), v(this.pos.x + Math.sign(this.spd.x), this.pos.y)).is) {
                 this.pos.x += Math.sign(this.spd.x);
-                i++;
             }
             this.spd.x = 0;
         }
 
-        this.pos.x += this.spd.x * this.speed * dt;
+        this.pos.x += this.spd.x;
 
-        if(collides(this, Instance.filter(["solid", "static"]), v(this.pos.x, this.pos.y + this.spd.y * this.speed * dt)).is) {
-            let i = 0;
-            while(!collides(this, Instance.filter(["solid", "static"]), v(this.pos.x, this.pos.y + Math.sign(this.spd.y))).is && i < this.spd.y * this.speed * dt) {
+        if(collides(this, Instance.filter(["solid", "static"]), v(this.pos.x, this.pos.y + this.spd.y)).is) {
+            while(!collides(this, Instance.filter(["solid", "static"]), v(this.pos.x, this.pos.y + Math.sign(this.spd.y))).is) {
                 this.pos.y += Math.sign(this.spd.y);
-                i++;
             }
             this.spd.y = 0;
         }
-        
-        this.pos.y += this.spd.y * this.speed * dt;
+
+        this.pos.y += this.spd.y;
 
     }
     draw() {
