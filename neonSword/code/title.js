@@ -2,7 +2,7 @@ const s_title = new Scene("title",v(), {
     title:[[]]
 }, {
     main:["noimage", "solid", "black"]
-}, () => {}, () => {
+},{}, () => {}, () => {
     vport.resize(v(1024,576));
 }, 60, 60)
 

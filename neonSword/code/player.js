@@ -2,11 +2,13 @@ const s0 = new Scene("s0",v(1024,576),
 {
     player:[[]],
     cursor: [[]],
-    block: cfg.s0.block,
     enemy:[],
-    spawner:[[]]
+    spawner:[[]],
+    collisionblock:cfg.s0.collisionblock
 }, {
     main:[["bck_black"], "tiled"]
+},{
+    "block.main":cfg.s0["block.main"]
 }, () => {
     bck.main.setScale(v(2,2));
     vport.resize(v(1024, 576))

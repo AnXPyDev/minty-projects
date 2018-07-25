@@ -5,8 +5,10 @@ const s0 = new Scene("s0", v(1024,1024),
 },
 {
     grid:[["grid"], "tiled"]
+},
+{
 }, () => {
-    vport.resize(v(1280,720));
+    vport.resize(v(800,600));
     bck.grid.setOffset(v(16,16));
 }, () => {
 
@@ -37,7 +39,7 @@ function setInfo(name, size, gs = size) {
     info.size = size;
     
     if(!colors[name]) {
-        colors[name] = `rgb(${Random.int(225,255)},${Random.int(225,255)},${Random.int(225,255)})`;
+        colors[name] = `rgb(${Random.int(155,255)},${Random.int(155,255)},${Random.int(155,255)})`;
     }
 
     bck.grid.setScale(v(gs.x / 32, gs.y / 32)); 
@@ -171,10 +173,15 @@ def("block", class extends Actor {
     }
     export() {
         if(!this.collision) {
-            exports[this.NAME] ? exports[this.NAME].push([this.pos.x, this.pos.y]) : exports[this.NAME] = [[this.pos.x, this.pos.y]];
+            if(!this.NAME.includes(".")) {
+                exports[this.NAME] ? exports[this.NAME].push([this.pos.x, this.pos.y]) : exports[this.NAME] = [[this.pos.x, this.pos.y]];
+            } else {
+                exports[this.NAME] ? exports[this.NAME].push([this.pos.x, this.pos.y, this.size.x, this.size.y]) : exports[this.NAME] = [[this.pos.x, this.pos.y, this.size.x, this.size.y]];
+            }
         } else {
-            exports["collisionblock"] ? exports["collisionblock"].push([this.pos.x, this.pos.y, this.size.x, this.size.y]) : exports[this.NAME] = [[this.pos.x, this.pos.y]];
+            exports["collisionblock"] ? exports["collisionblock"].push([this.pos.x, this.pos.y, this.size.x, this.size.y]) : exports["collisionblock"] = [[this.pos.x, this.pos.y, this.size.x, this.size.y]];
         }
+        console.log("exported", exports);
     }
 })
 
