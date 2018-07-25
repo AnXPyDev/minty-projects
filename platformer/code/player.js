@@ -1,8 +1,8 @@
 def("player", class extends Actor {
     constructor() {
-        super(v(), "player");
-        this.speed = 4;
-        this.jumpspeed = 20;
+        super(v(0,236), "player");
+        this.speed = 8;
+        this.jumpspeed = 22;
         this.spd = v();
         this.size = v(32,32);
 

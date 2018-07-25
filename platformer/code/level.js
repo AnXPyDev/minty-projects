@@ -5,6 +5,8 @@ const scene_0 = new Scene("scene_0", v(800, 600),
 },
 {
     main:[["noimage"], "solid", "white"]
-}, () => {}, () => {}, 60,60);
+}, () => {
+    vport.resize(v(800,600));
+}, () => {}, 60,60);
 
 scene_0.vars.gravity = 2;
