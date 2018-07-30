@@ -7,7 +7,7 @@ const s0 = new Scene("s0", v(640, 640), {
 },{
     // Spawn background
     main:["noimage", "solid", "black"]
-},() => {
+},{},() => {
     // Resize viewport to custom size
     vport.resize(v(640,640));
 },() => {}, 60, 60)
@@ -16,6 +16,7 @@ GAME.onload = function() {
     // Load scene when game is ready to be loaded
     s0.load();
 }
+
 
 // Define an actor 
 def("paddle", class extends Actor {
