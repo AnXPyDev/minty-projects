@@ -17,6 +17,29 @@ GAME.onload = function() {
     s0.load();
 }
 
+class part extends Particle {
+    constructor(pos, life, velocity) {
+        super(pos, life, "noimage", 1, 0);
+        this.size = v(8,8);
+    }
+    tick() {
+        this.size.y -= 1;
+        this.size.x -= 1;
+    }
+    draw() {
+        Draw.ellipse(this.size, this.pos, "white");
+        
+    }
+}
+
+def("main_emm", class extends Emitter {
+    constructor(pos) {
+        super(() => {
+            this.spawnParticle(part, this.pos, 8);
+        }, 1, "main_emm");
+        this.pos = pos;
+    }
+})
 
 // Define an actor 
 def("paddle", class extends Actor {
@@ -49,6 +72,7 @@ def("ball", class extends Actor {
         super(v(), "ball");
         this.dir = v(Random.int(4,8),Random.int(4,8));
         this.size = v(8,8);
+        Instance.spawn("main_emm", [this.pos]);
     }
     tick() {
         // Invert direction when hitting paddle

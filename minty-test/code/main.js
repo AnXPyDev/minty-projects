@@ -15,11 +15,11 @@ class part extends Particle {
         super(pos, life, "noimage", 1, 0);
         this.velocity = velocity;
         this.speed = 4;
-        this.size = v(32,32);
+        this.size = v(64,64);
     }
     tick() {
-        this.size.x -= 0.5;
-        this.size.y -= 0.5;
+        this.size.y -= 1;
+        this.size.x -= 1;
         this.pos.x += this.velocity.x * this.speed;
         this.pos.y += this.velocity.y * this.speed;
     }
@@ -32,7 +32,7 @@ class part extends Particle {
 def("main_emm", class extends Emitter {
     constructor() {
         super(() => {
-            this.spawnParticle(part, this.pos, 60, new Angle("deg", wave(0,360,3)).dir());
+            this.spawnParticle(part, this.pos, 64, new Angle("deg", wave(0,360,3)).dir());
         }, 2, "main_emm");
     }
 })
