@@ -1,0 +1,1 @@
+{"name":"Default","code":{"js":["level.js","player.js","tile.js"],"json":["sc_00.json"]},"assets":{"images":["wall.png"],"sounds":[]},"imgSmoothing":false}

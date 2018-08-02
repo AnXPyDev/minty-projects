@@ -1,0 +1,1 @@
+defTile("wall", "wall", v(32), [[["main", 50]]]);
