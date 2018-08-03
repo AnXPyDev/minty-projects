@@ -5,18 +5,17 @@ def("player", class extends Actor {
     
         this.grav = 14;
         this.jumpspeed = 18;
-        this.movespeed = 8;
-        this.acceleration = v(1,2);
+        this.movespeed = 12;
+        this.acceleration = v(2,2);
 
         this.sp = v();
     
         this.jumpTimer = 0;
-        this.jumpTimerLength = 8;
+        this.jumpTimerLength = 7;
 
     }
     tick() {
         let move = -Key.check("a") + Key.check("d");
-        console.log(move);
 
         if(move != 0) {
             this.sp.x += this.acceleration.x * move;

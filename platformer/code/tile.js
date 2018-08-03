@@ -1,1 +1,1 @@
-defTile("wall", "wall", v(32), [[["main", 50]]]);
+defTile("wall", "wall", v(64), [[["main", 50]]]);
