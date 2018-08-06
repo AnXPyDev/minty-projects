@@ -291,10 +291,10 @@ def("sword_trail", class extends Actor {
     }
     draw() {
         ctx.save();
-        ctx.fillStyle = "white";
-        ctx.translate(this.pos.x, this.pos.y);
-        ctx.rotate(this.angle.rad);
-        ctx.fillRect(-this.size.x / 2, -this.size.y, this.size.x, this.size.y);
+        ctx.setFillStyle("white");
+        ctx.translate(this.pos);
+        ctx.rotate(this.angle);
+        ctx.fillRect(v(-this.size.x / 2, -this.size.y), this.size);
         ctx.restore();
     }
 }, ["effect","trail"]);
