@@ -6,11 +6,13 @@ const s0 = new Scene("s0",v(1024,576),
     spawner:[[]],
     collisionblock:cfg.s0.collisionblock
 }, {
+    bkg:[["noimage"], "solid", "black"],
     main:[["bck_black"], "tiled"]
 },{
     "block.main":cfg.s0["block.main"]
 }, () => {
     bck.main.setScale(v(2,2));
+    bck.main.margin = v(16);
     vport.resize(v(1024, 576))
 }, () => {}, 60,60);
 

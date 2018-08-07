@@ -1,6 +1,7 @@
 const sc_00 = new Scene("sc_00", v(480,640), 
 {
-    bird:[[]]
+    bird:[[]],
+    pipespawner:[[]]
 }, {
     main:[["noimage"], "solid", "lightblue"]
 }, {
