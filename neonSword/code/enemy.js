@@ -5,7 +5,7 @@ def("enemy", class extends Actor {
         this.size = v(32, 32);
         this.mask = new Polygon("rect");
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
-        this.sprite = new Sprite(["enemy"], 4, 2);
+        this.sprite = new Sprite(["enemy"], 4, 30);
         this.speed = 2;
         this.spd = v();
         this.depth = 9
@@ -58,7 +58,7 @@ def("spawner", class extends Actor {
     constructor() {
         super(v(), "spawner");
         this.points = [v(-scene.size.x / 2, -scene.size.y / 2), v(scene.size.x / 2, -scene.size.y / 2), v(scene.size.x / 2, scene.size.y / 2), v(-scene.size.x / 2, scene.size.y / 2)];
-        this.loop("spawn" ,() => {if(ins.enemy.length < 50) {Instance.spawn("enemy", [this.points[Random.int(0,3)]])}}, 60);   
+        this.loop("spawn" ,() => {if(ins.enemy.length < 50) {Instance.spawn("enemy", [this.points[Random.int(0,3)]])}}, 1);   
     }
 })
 

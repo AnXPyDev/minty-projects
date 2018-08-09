@@ -6,8 +6,8 @@ const s0 = new Scene("s0",v(1024,576),
     spawner:[[]],
     collisionblock:cfg.s0.collisionblock
 }, {
-    bkg:[["noimage"], "solid", "black"],
-    main:[["bck_black"], "tiled"]
+    bkg:[[["noimage"]], "solid", "white"],
+    main:[[["bck_black"]], "tiled"]
 },{
     "block.main":cfg.s0["block.main"]
 }, () => {
@@ -44,7 +44,7 @@ def("player", class extends Actor {
         this.size = v(32, 32);
         this.mask = new Polygon("rect");
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
-        this.sprite = new Sprite(["player"], 4, 2);
+        this.sprite = new Sprite(["player"], 4, 30);
         this.speed = 8;
         this.spd = v();
         this.lastpos = v();

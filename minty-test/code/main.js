@@ -1,7 +1,7 @@
 const s0 = new Scene("s0", v(600,600), {
     main_emm:[[]]
 },{
-    main:[["noimage"], "solid", "white"]
+    main:[[["noimage"]], "solid", "white"]
 }, {
 
 }, () => {}, () => {}, 60,60);
@@ -17,7 +17,7 @@ class part extends Particle {
         this.speed = 1;
         this.fullLife = life;
         this.size = v(64,64);
-        this.color = Random.rgb();
+        this.color = "blue";
     }
     tick() {
         this.size.y -= 64 / this.fullLife;
@@ -26,18 +26,16 @@ class part extends Particle {
         this.pos.y += this.velocity.y * this.speed;
     }
     draw() {
-        Draw.opacity(this.life / this.fullLife, () => {
+        Draw.opacity(Math.pow(this.life / this.fullLife, 2), () => {
             Draw.ellipse(this.size, this.pos, this.color);
         })
-        
-        
     }
 }
 
 def("main_emm", class extends Emitter {
     constructor() {
         super(() => {
-            this.spawnParticle(part, this.pos, 240, new Angle("deg", wave(0,360,3)).dir());
-        }, 2, "main_emm");
+            this.spawnParticle(part, this.pos, 240, new Angle("deg", wave(0,360,5)).dir());
+        }, scene.tps / 2, "main_emm");
     }
 })
