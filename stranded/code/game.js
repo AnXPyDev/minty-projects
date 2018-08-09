@@ -23,23 +23,23 @@ def("game__", class extends Actor {
         this.water = new Background([["water"]], "tiled");
         this.water.setScale(v(5));
         this.water.setScroll(v(this.windSpeed, 0));
-        this.water.alpha = 0.5;
+        this.water.alpha = 1;
         this.water.angle = this.windAngle;
         // End Water
 
-        this.camLerpMult = 0.01;
+        this.camLerpMult = 0.2;
 
 
     }
     tick() {
         // Wind
-        this.windAngle.interpolate(this.actualWindAngle, Random.float(0.01,0.06));
+        this.windAngle.interpolate(this.actualWindAngle, 0.05);
         
         
         // End Wind
 
         // Water
-        this.water.update(camera.pos);
+        this.water.update();
         // End Water
 
 

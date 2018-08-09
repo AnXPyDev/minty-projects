@@ -6,13 +6,12 @@ const s0 = new Scene("s0",v(1024,576),
     spawner:[[]],
     collisionblock:cfg.s0.collisionblock
 }, {
-    bkg:[[["noimage"]], "solid", "white"],
+    bkg:[[["noimage"]], "solid", "black"],
     main:[[["bck_black"]], "tiled"]
 },{
     "block.main":cfg.s0["block.main"]
 }, () => {
     bck.main.setScale(v(2,2));
-    bck.main.margin = v(16);
     vport.resize(v(1024, 576))
 }, () => {}, 60,60);
 
@@ -311,7 +310,7 @@ def("shotgun", class extends Actor {
         this.size = v(64,12);
         this.mask = new Polygon("rect");
         this.mask.set([[-1,-1],[1,-1],[1,1],[-1,1]]);
-        this.sprite = new Sprite(["shotgun"], 6, 12);
+        this.sprite = new Sprite(["shotgun"], 6, 60 / 12);
         this.depth = 100;    
     }
     tick() {
@@ -329,7 +328,7 @@ def("shotgun", class extends Actor {
         when(this.sprite.index == 5 && Key.check("mouse"), () => {
             this.fire();
             this.sprite.index = 0;
-            this.sprite.setFps(12);
+            this.sprite.setFps(60 / 12);
         })
 
         this.sprite.update();
