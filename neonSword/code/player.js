@@ -272,6 +272,7 @@ def("arrow", class extends Actor {
         this.mult = this.angle.dir();
         let ag = new Angle("deg", this.angle.deg);
         this.angle = ag;
+        snd.crossbow.play(0.1);
     }
 }, ["weapon"]);
 
@@ -325,6 +326,10 @@ def("shotgun", class extends Actor {
             this.sprite.setFps(0);
         })
 
+        when(this.sprite.index == 1, () => {
+            snd.shotgunreload.play(0.1);
+        }) 
+
         when(this.sprite.index == 5 && Key.check("mouse"), () => {
             this.fire();
             this.sprite.index = 0;
@@ -343,6 +348,7 @@ def("shotgun", class extends Actor {
         for(let i = 0; i < 4; i++) {
             Instance.spawn("shotgun_shell", [this.pos, new Angle("deg", this.angle.deg + [-15,-5,5,15][i])]);
         }
+        snd.shotgun.play(0.1);
     }
 }, ["weapon"])
 
