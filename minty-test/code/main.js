@@ -38,4 +38,4 @@ def("main_emm", class extends Emitter {
             this.spawnParticle(part, this.pos, 240, new Angle("deg", wave(0,360,5)).dir());
         }, scene.tps / 2, "main_emm");
     }
-})
+}) 
