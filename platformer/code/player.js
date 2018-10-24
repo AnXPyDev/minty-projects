@@ -26,34 +26,34 @@ def("player", class extends Actor {
         this.sp.x = clamp(this.sp.x, -this.movespeed, this.movespeed);
 
         if(this.jumpTimer > 0) {
-            this.jumpTimer --;
-            this.sp.y -= this.acceleration.y;
+            this.jumpTimer -= dt;
+            this.sp.y -= this.acceleration.y * dt;
         } else {
-            this.sp.y += this.acceleration.y;
+            this.sp.y += this.acceleration.y * dt;
         }
 
         this.sp.y = clamp(this.sp.y, -this.jumpspeed, this.grav);
-
-        if(collides(this, Instance.filter(["solid"]), v(this.pos.x + this.sp.x, this.pos.y)).is) {
-            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.sp.x), this.pos.y)).is) {
-                this.pos.x += Math.sign(this.sp.x);
+	
+        if(collides(this, Instance.filter(["solid"]), v(this.pos.x + this.sp.x * dt, this.pos.y)).is) {
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x + Math.sign(this.sp.x * dt), this.pos.y)).is) {
+                this.pos.x += Math.sign(this.sp.x * dt);
             }
             this.sp.x = 0;
         }
 
-        this.pos.x += this.sp.x;
+        this.pos.x += this.sp.x * dt;
 
-        if(collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + this.sp.y)).is) {
-            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.sign(this.sp.y))).is) {
-                this.pos.y += Math.sign(this.sp.y);
+        if(collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + this.sp.y * dt)).is) {
+            while(!collides(this, Instance.filter(["solid"]), v(this.pos.x, this.pos.y + Math.sign(this.sp.y * dt))).is) {
+                this.pos.y += Math.sign(this.sp.y * dt);
             }
-            if(this.sp.y > 0 && when(Key.check(" "))) {
+            if(this.sp.y * dt > 0 && when(Key.check(" "))) {
                 this.jumpTimer = this.jumpTimerLength;
             }
             this.sp.y = 0;
         }
         
-        this.pos.y += this.sp.y;
+        this.pos.y += this.sp.y * dt;
 
         
     }
